@@ -34,6 +34,20 @@ insert into pet values('성탄이','안대혁','dog','m','2007-12-25',null);
 
 select * from pet;
 
+-- delete: DML(D)
+delete from pet where name = '성타니';
+
+-- update: DML(U)
+update pet 
+set name='성타니' 
+where name="성탄이";
+
+-- load data
+load data local infile 'd:\pet.txt' into table pet;
+
+-- select
+select * from pet where name = 'Bowser';
+
 
 
 
