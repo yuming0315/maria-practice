@@ -71,15 +71,14 @@ on a.emp_no = b.emp_no and b.dept_no = c.dept_no
 where a.to_date >= sysdate() and b.to_date >= sysdate()
 group by 부서명
 order by 평균연봉 desc;
--- 평균 연봉 으로 칼럼이름 검색못함
 
 -- 문제10.
 -- 현재, 직책별 평균 연봉을 연봉이 큰 직책 순서대로 출력하세요.
-select a.title 직책, avg(b.salary) 평균연봉
+select a.title 직책, avg(b.salary) '평균 연봉'
 from titles a join salaries b
 on a.emp_no = b.emp_no
 where a.to_date >= sysdate() and b.to_date >= sysdate()
 group by 직책
-order by 평균연봉 desc;
-
+order by `평균 연봉` desc;
+-- `으로 구분
 
