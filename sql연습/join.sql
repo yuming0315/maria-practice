@@ -77,8 +77,9 @@ group by a.title having count(a.emp_no) >= 100;
 -- 실습문제 4
 -- 현재, 부서별로 직책이 engineer인 직원들에 대해서만 평균 급여를 구하세요.
 -- 부서이름, 평균급여 순으로 출력하세요.
-select c.dept_name 부서이름, avg(d.salary) 평균급여, count(a.emp_no)
+select c.dept_name 부서이름, avg(d.salary) 평균급여
 from titles a join dept_emp b join departments c join salaries d
 on a.emp_no = b.emp_no and b.dept_no = c.dept_no and a.emp_no = d.emp_no
 where a.to_date >= sysdate() and b.to_date >= sysdate() and d.to_date >= sysdate() and a.title = 'engineer'
-group by c.dept_name;
+group by c.dept_name
+order by 평균급여 desc;

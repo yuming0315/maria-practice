@@ -1,8 +1,6 @@
--- select 연습
-select * from departments;
-select count(*) from departments;
+-- Outer Join
 
-select dept_no,dept_name from departments;
+desc emp;
+insert into dept
 
--- as (alias, 생략 가능)
 
