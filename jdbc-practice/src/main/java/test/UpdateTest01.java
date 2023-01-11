@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class UpdateTest {
+public class UpdateTest01 {
 
 	public static void main(String[] args) {
 		DeptVo vo = new DeptVo();
@@ -29,7 +29,7 @@ public class UpdateTest {
 			conn = DriverManager.getConnection(url,"webdb","webdb");
 			
 			//3. Statement 생성
-			stmt = conn.createStatement();
+			stmt = conn.createStatement();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 			
 			//4. sql 실행
 			String sql = "update dept set name= '" +vo.getName()+ "'"+ 
