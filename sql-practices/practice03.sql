@@ -28,7 +28,9 @@ order by 이름;
 select a.emp_no 사번, a.first_name 이름, b.salary 연봉, f.title 직책,d.dept_name 부서
 from employees a join salaries b join dept_emp c join departments d join titles f
 on a.emp_no = b.emp_no and b.emp_no = c.emp_no and c.dept_no = d.dept_no and a.emp_no = f.emp_no
-group by a.emp_no;
+where b.to_date >= sysdate() and c.to_date >= sysdate() and f.to_date >= sysdate()
+order by 이름;
+
 
 -- 문제5.
 -- 'Technique Leader'의 직책으로 과거에 근무한 적이 있는 모든 사원의 사번과 이름을 출력하세요. 

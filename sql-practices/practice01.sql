@@ -18,6 +18,10 @@ from employees
 group by gender
 order by gender;
 
+select if (gender ='M', '남자', '여자') as gender, count(*) as count
+from employees
+group by gender;
+
 -- 문제4.
 -- 현재 근무하고 있는 직원 수는 몇 명입니까? (salaries 테이블을 사용합니다.)
 
