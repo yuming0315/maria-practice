@@ -1,4 +1,4 @@
-package email.dao;
+package bookshop.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,31 +8,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import email.vo.EmaillistVo;
+import bookshop.vo.BookVo;
 
-public class EmaillistDao {
+public class BookDao {
 
-	public List<EmaillistVo> findAll() {
-		List<EmaillistVo> result = new ArrayList<>();
+	public List<BookVo> findAll() {
+		List<BookVo> result = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			conn = getConnection();
 			
-			//3. Statement 준비
-			String sql = "select no, first_name, last_name,email from emaillist order by no desc";
+			String sql = "select a.no, a.title, a.rent, b.name"
+					+ " from book a join author b on a.author_no = b.no";
 			pstmt = conn.prepareStatement(sql);
-			
 			rs = pstmt.executeQuery();
 			
-			//5.결과 처리
 			while(rs.next()) {
-				EmaillistVo vo = new EmaillistVo();
+				BookVo vo = new BookVo();
 				vo.setNo(rs.getLong(1));
-				vo.setFirstName(rs.getString(2));
-				vo.setLastName(rs.getString(3));
-				vo.setEmail(rs.getString(4));
+				vo.setTitle(rs.getString(2));
+				vo.setRent(rs.getString(3));
+				vo.setAuthor(rs.getString(4));
 				
 				result.add(vo);
 			}
@@ -61,19 +59,19 @@ public class EmaillistDao {
 		return result;
 	}
 
-	public void insert(EmaillistVo vo) {
+	public void insert(BookVo vo) {
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			conn = getConnection();
-			String sql ="insert into emaillist values(null,?,?,?)";
+			
+			String sql ="insert into book values(null,?,default,?)";
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, vo.getFirstName());
-			pstmt.setString(2, vo.getLastName());
-			pstmt.setString(3, vo.getEmail());
+			pstmt.setString(1, vo.getTitle());
+			pstmt.setLong(2, vo.getAuthorNo());
 			
 			pstmt.executeUpdate();
 			
@@ -95,16 +93,18 @@ public class EmaillistDao {
 		
 	}
 	
-	public void deleteByEmail(String email) {
+	public void update(BookVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			conn = getConnection();
-			String sql ="delete from emaillist where email = ?";
+			
+			String sql ="update book set rent = ? where no = ?";
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, email);
+			pstmt.setString(1, vo.getRent());
+			pstmt.setLong(2, vo.getNo());
 			
 			pstmt.executeUpdate();
 			
@@ -139,5 +139,5 @@ public class EmaillistDao {
 	}
 
 	
+	
 }
-
