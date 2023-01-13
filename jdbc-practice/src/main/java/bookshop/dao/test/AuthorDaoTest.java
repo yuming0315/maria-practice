@@ -25,8 +25,10 @@ public class AuthorDaoTest {
 //		for (Book book : books) {
 //			testInsert(book.getAuthor());
 //		}
-		testFindAll();
-		testFindAuthor();
+//		testFindAll();
+//		testFindAuthor();
+		
+		System.out.println("215-21325".matches(".*[\\D].*"));
 		
 	}
 
