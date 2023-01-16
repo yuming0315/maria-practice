@@ -17,23 +17,23 @@ import bookmall.vo.OrderVo;
 
 public class BookMall {
 	static String quit[] = { "q", "quit" };
-	static String pay[] = {"현금","카드","1","2"};
+	static String pay[] = { "현금", "카드", "1", "2" };
 	static Scanner sc = new Scanner(System.in);
 	static Long userNo;
-	
+
 	public static void main(String[] args) {
-		wjscjfl();
-		
+		// wjscjfl();
+
 		List<Object> list;
-		String id,pw;
+		String id, pw;
 		do {
 			System.out.println("id: kickscar pw: 1234");
 			System.out.print("로그인 ID > ");
 			id = sc.nextLine();
 			System.out.print("로그인 PW > ");
 			pw = sc.nextLine();
-			list = new MemberDao().find(new MemberVo(id,pw));
-		}while(list.isEmpty());
+			list = new MemberDao().find(new MemberVo(id, pw));
+		} while (list.isEmpty());
 
 		userNo = ((MemberVo) list.get(0)).getNo();
 		String control;
@@ -44,11 +44,11 @@ public class BookMall {
 			switch (control) {
 			case "l":
 			case "list":
-				findAll(new MemberVo(),new MemberDao().findAll());
+				findAll(new MemberVo(), new MemberDao().findAll());
 				break;
 			case "c":
 			case "category":
-				findAll(new CategoryVo(),new CategoryDao().findAll());
+				findAll(new CategoryVo(), new CategoryDao().findAll());
 				break;
 			case "p":
 			case "product":
@@ -57,7 +57,7 @@ public class BookMall {
 			case "cart":
 				inCart();
 				break;
-				
+
 			case "o":
 			case "order":
 				new OrderDao().findMyOrder(new OrderVo(userNo));
@@ -67,89 +67,90 @@ public class BookMall {
 		} while (!Arrays.asList(quit).contains(control));
 
 	}
-	
-	public static <T> void findAll(T obj,List<Object> list) {
-		for(Object vo : list) {
+
+	public static <T> void findAll(T obj, List<Object> list) {
+		for (Object vo : list) {
 			T mvo = (T) vo;
 			System.out.println(mvo);
 		}
-		
+
 	}
+
 	private static int totalMoney(List<Object> list) {
-		int result=0;
-		for(Object vo : list) {
+		int result = 0;
+		for (Object vo : list) {
 			CartVo mvo = (CartVo) vo;
 			result += mvo.getPrice().intValue() * mvo.getAmount().intValue();
 		}
 		return result;
 	}
-	
+
 	private static void inCart() {
 		List<Object> list = new CartDao().find(new CartVo(userNo));
-		findAll(new CartVo(),list);
-		
+		findAll(new CartVo(), list);
+
 		int money = totalMoney(list);
-		if(money<0) {
+		if (money <= 0) {
+			System.out.println("카트가 비어있습니다.");
 			return;
 		}
-		System.out.println("총 금액 "+money +"원");
-		
-		System.out.print("(q)uit 외의 키 입력시 결제로 이동 > ");
-		String command = sc.nextLine().toLowerCase();
-		
-		if(!Arrays.asList(quit).contains(command)) {
-			while(money>0) {
-				System.out.print("결제방식 선택 (1)현금 (2)카드 (Q)uit 취소 >");
-				String payas = sc.nextLine();
-				
-				if(Arrays.asList(quit).contains(payas)) {
-					break;
-				}
-				
-				if(Arrays.asList(pay).contains(payas)) {
-					System.out.println(money+"원을 "
-				+ (payas.matches(".*[\\D].*")? payas : pay[Integer.parseInt(payas)-1])
-				+"으로 결제");
-					String address;
-					while(true) {
-						System.out.print("배송할 주소 입력 > ");
-						address = sc.nextLine();
-						
-						if(null != address || !"".equals(address)) {
-							break;
-						}
-						System.out.println("잘못된 입력입니다.");
+		System.out.println("총 금액 " + money + "원");
+
+		while (money > 0) {
+			System.out.print("(q)uit 외의 키 입력시 결제로 이동 > ");
+			String command = sc.nextLine().toLowerCase();
+
+			if (Arrays.asList(quit).contains(command)) {
+				break;
+			}
+
+			System.out.print("결제방식 선택 (1)현금 (2)카드 (Q)uit 취소 >");
+			String payas = sc.nextLine();
+
+			if (Arrays.asList(quit).contains(payas)) {
+				break;
+			}
+
+			if (Arrays.asList(pay).contains(payas)) {
+				System.out.println(money + "원을 "
+						+ (payas.matches(".*[\\D].*") ? payas : pay[Integer.parseInt(payas) - 1]) + "으로 결제");
+				String address;
+				while (true) {
+					System.out.print("배송할 주소 입력 > ");
+					address = sc.nextLine();
+
+					if (null != address || !"".equals(address)) {
+						break;
 					}
-					
-					OrderVo vo = new OrderVo();
-					vo.setMembers_no(userNo);
-					vo.setPayas((payas.matches(".*[\\D].*")? payas : pay[Integer.parseInt(payas)-1]));
-					vo.setAddress(address);
-					vo.setTotalamount(Long.valueOf(money));
-					
-					new OrderDao().insert(vo);
-					break;
+					System.out.println("잘못된 입력입니다.");
 				}
-				else {
-					System.out.println("잘못된 입력 다시 입력해주세요.");
-				}
+
+				OrderVo vo = new OrderVo();
+				vo.setMembers_no(userNo);
+				vo.setPayas((payas.matches(".*[\\D].*") ? payas : pay[Integer.parseInt(payas) - 1]));
+				vo.setAddress(address);
+				vo.setTotalamount(Long.valueOf(money));
+
+				new OrderDao().insert(vo);
+				break;
+			} else {
+				System.out.println("잘못된 입력 다시 입력해주세요.");
 			}
 		}
 	}
-	
+
 	private static void addCart() {
 		while (true) {
-			findAll(new BookVo(),new BookDao().findAll());
-			
+			findAll(new BookVo(), new BookDao().findAll());
+
 			System.out.print("카트에 추가할 책 번호 or 제목, 수량 입력(생략시 1) ex)1,1 또는 데미안,3 (Q)uit 나가기 > ");
 			String product = sc.nextLine();
 
 			if (Arrays.asList(quit).contains(product)) {
 				break;
 			}
-			
-			
-			String[] tokens = product.replaceAll(" ","").split(",");
+
+			String[] tokens = product.replaceAll(" ", "").split(",");
 			CartVo cvo = new CartVo();
 			BookVo bvo = new BookVo(tokens[0]);
 			List<Object> list = new BookDao().find(bvo);
@@ -158,35 +159,32 @@ public class BookMall {
 				cvo.setAmount(1L);
 			case 2:
 				cvo.setMembers_no(userNo);
-				if(tokens.length!=1) {
-					if(!tokens[1].matches(".*[\\D].*")||cvo.getAmount()==0) {
+				if (tokens.length != 1) {
+					if (!tokens[1].matches(".*[\\D].*") || cvo.getAmount() == 0) {
 						cvo.setAmount(Long.parseLong(tokens[1]));
-					}
-					else if(cvo.getAmount()!=1L) {
+					} else if (cvo.getAmount() != 1L) {
 						System.out.println("잘못된 수량 입력입니다.");
 						break;
 					}
-				}	
-				
-				if(list.size()>1) {
-					findAll(new BookVo(),list);
+				}
+
+				if (list.size() > 1) {
+					findAll(new BookVo(), list);
 					System.out.print("카트에 넣을 책번호를 입력해 주세요 >");
 					cvo.setBook_no((sc.nextLong()));
-				}
-				else if(!tokens[0].matches(".*[\\D].*")){
+					sc.nextLine();
+				} else if (!tokens[0].matches(".*[\\D].*")) {
 					cvo.setBook_no(Long.parseLong(tokens[0]));
-				}
-				else if(!list.isEmpty()) {
+				} else if (!list.isEmpty()) {
 					cvo.setBook_no(((BookVo) list.get(0)).getNo());
-				}
-				else {
+				} else {
 					System.out.println("잘못된 입력입니다.");
 					break;
 				}
 				new CartDao().insert(cvo);
 				break;
-				
-				default:
+
+			default:
 				System.out.println("잘못된 입력입니다.");
 			}
 
