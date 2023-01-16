@@ -46,7 +46,7 @@ public class OrderDao implements BookMallDao{
 			pstmt.executeUpdate();
 			
 			//3. order_book에 넣어주기
-			list = new CartDao().find(new CartVo(mvo.getNo()));
+			list = new CartDao().find(new CartVo(mvo.getMembers_no()));
 			
 			for(Object v : list) {
 				CartVo cv = (CartVo) v;
@@ -150,9 +150,10 @@ public class OrderDao implements BookMallDao{
 			for(Object obj : result) {
 				//주문내역 상단
 				templist.clear();
-				String sql = " select b.title,b.price,a.amount"
+				String sql = " select b.title,b.price,sum(a.amount)"
 						+ " from order_book a join book b on a.book_no = b.no"
-						+ " where a.orders_no = ?";
+						+ " where a.orders_no = ?"
+						+ " group by b.no";
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setLong(1, ((OrderVo) obj).getNo());

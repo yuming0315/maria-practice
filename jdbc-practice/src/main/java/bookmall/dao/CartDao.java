@@ -64,9 +64,10 @@ public class CartDao implements BookMallDao{
 			
 			CartVo mvo = (CartVo) vo;
 			
-			String sql = "select b.title, b.price, a.amount,b.no"
+			String sql = "select b.title, b.price, sum(a.amount), b.no"
 					+ " from cart a join book b on a.book_no = b.no"
-					+ " where a.members_no = ?";
+					+ " where a.members_no = ?"
+					+ " group by a.book_no";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setLong(1, mvo.getMembers_no());

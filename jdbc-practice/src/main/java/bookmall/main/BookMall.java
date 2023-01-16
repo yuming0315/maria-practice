@@ -22,7 +22,7 @@ public class BookMall {
 	static Long userNo;
 
 	public static void main(String[] args) {
-		// wjscjfl();
+		wjscjfl();
 
 		List<Object> list;
 		String id, pw;
